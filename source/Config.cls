@@ -24,8 +24,10 @@ Private Const iniFileName As String = "elvin_" & APP_NAME & ".ini"
 
 '===============================================================================
 
+Public Compression As Double
 Public CsvCharset As String
 Public CsvSeparator As String
+Public FileNameColumn As String
 Public Space As Double
 Public TableFile As String
 Public TargetFolder As String
@@ -39,8 +41,10 @@ Private Sub Assign(ByVal Action As iniAction)
         iniFilePrepare .Self, Action
         
         '.Section = "DEFAULT"
+        .KeyVar "Compression", Compression
         .KeyVar "CsvCharset", CsvCharset
         .KeyVar "CsvSeparator", CsvSeparator
+        .KeyVar "FileNameColumn", FileNameColumn
         .KeyVar "Space", Space
         .KeyVar "TableFile", TableFile
         .KeyVar "TargetFolder", TargetFolder

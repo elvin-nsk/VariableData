@@ -15,7 +15,7 @@ Public Const APP_NAME As String = "VariableData"
 
 '===============================================================================
 
-Private Const SaveAsExt As String = "cdr"
+Private Const ExportAsExt As String = "jpg"
 
 '===============================================================================
 
@@ -68,15 +68,27 @@ Private Sub MainRoutine( _
         Doc.Unit = cdrPixel
         ProcessDocument Doc.ActivePage, TableDic, Row, Cfg
         With FileSpec.Create
-            .NameWithoutExt = Row
-            .Ext = SaveAsExt
+            .NameWithoutExt = FileNameFromCell(TableDic(Cfg.FileNameColumn)(Row))
+            .Ext = ExportAsExt
             .Path = Cfg.TargetFolder
-            Doc.SaveAs .ToString
-            PBar.Update
+            With Doc.ExportBitmap( _
+                     .ToString, cdrJPEG, cdrCurrentPage, cdrRGBColorImage, _
+                     Doc.ActivePage.SizeWidth, Doc.ActivePage.SizeHeight _
+                 )
+                 .Compression = Cfg.Compression
+                 .Finish
+            End With
         End With
+        PBar.Update
         Doc.Close
     Next Row
 End Sub
+
+Private Property Get FileNameFromCell(ByVal Cell As String) As String
+    Dim Arr As Variant
+    Arr = VBA.Split(Cell, "\")
+    FileNameFromCell = Arr(UBound(Arr))
+End Property
 
 Private Sub ProcessDocument( _
                 ByVal Page As Page, _
