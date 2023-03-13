@@ -1,7 +1,7 @@
 Attribute VB_Name = "VariableData"
 '===============================================================================
 '   Макрос          : VariableData
-'   Версия          : 2023.03.12
+'   Версия          : 2023.03.13
 '   Сайты           : https://vk.com/elvin_macro
 '                     https://github.com/elvin-nsk
 '   Автор           : elvin-nsk (me@elvin.nsk.ru)
@@ -62,15 +62,18 @@ Private Sub MainRoutine( _
     Dim PBar As IProgressBar
     Set PBar = ProgressBar.CreateNumeric(TotalRows)
     Dim Doc As Document
+    Dim Name As String
     Dim Row As Long
     For Row = 1 To TotalRows
         Set Doc = Page.Shapes.All.CreateDocumentFrom
         Doc.Unit = cdrPixel
         ProcessDocument Doc.ActivePage, TableDic, Row, Cfg
+        Name = FileNameFromCell(TableDic(Cfg.FileNameColumn)(Row))
         With FileSpec.Create
-            .NameWithoutExt = FileNameFromCell(TableDic(Cfg.FileNameColumn)(Row))
+            .NameWithoutExt = Name
             .Ext = ExportAsExt
             .Path = Cfg.TargetFolder
+            .Path = MakeDir(.Path & Name)
             With Doc.ExportBitmap( _
                      .ToString, cdrJPEG, cdrCurrentPage, cdrRGBColorImage, _
                      Doc.ActivePage.SizeWidth, Doc.ActivePage.SizeHeight _
